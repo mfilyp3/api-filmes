@@ -1,20 +1,23 @@
 import { useEffect, useState } from "react";
 
-export function useKeyPress(key: number) {
-    const [keyPressed, setKeyPressed] = useState(false);
+export function useKeyPress(key: number): boolean {
+    const [keyPressed, setKeyPressed] = useState<boolean>(false);
 
 
-    const downKey = ({ targetKey }: any) => {
-        if (key === targetKey) {
+    const downKey = (pressedKey: KeyboardEvent): void => {
+        const { which } = pressedKey;
+        if (which === key) {
             setKeyPressed(true)
         }
     }
-    const upKey = ({ targetKey }: any) => {
-        console.log(targetKey);
-        if (key === targetKey) {
+
+    const upKey = (pressedKey: KeyboardEvent): void => {
+        const { which } = pressedKey;
+        if (which === key) {
             setKeyPressed(false)
         }
     }
+
 
     useEffect(() => {
         window.addEventListener("keydown", downKey);
@@ -24,7 +27,8 @@ export function useKeyPress(key: number) {
             window.removeEventListener("keydown", downKey);
             window.removeEventListener("keyup", upKey);
         }
-    });
+    }, []);
 
-    return [keyPressed, setKeyPressed];
+    return keyPressed;
+
 }

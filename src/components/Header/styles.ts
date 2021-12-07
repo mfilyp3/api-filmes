@@ -13,7 +13,7 @@ export const Container = styled.header`
   justify-content: space-between;
   transition: height 0.5s ease;
   box-shadow: 0 0 10px 0 ${(props) => shade(0.4, props.theme.colors.primary)};
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
   &.responsive {
     height: 90vh;
 

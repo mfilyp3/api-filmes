@@ -4,27 +4,55 @@ import { Movie } from "../Movie";
 import { Container, Swipe } from "./styles";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { useKeyPress } from "../../utils/hooks/useKeyPress";
-
-interface IDataResponse {
-  title: string;
-  id: string;
-  poster_path: string;
-  backdrop_path: string;
-}
+import { MovieDataModal } from "../MovieDataModal";
+import { IMovieData } from "../../interfaces/Movies/movieData.interface";
 
 export function PopularFilms() {
-  const [movieList, setMovieList] = useState<IDataResponse[]>([]);
+  const [movieDataModalShow, setMovieDataModalShow] = useState(false);
+  const [movieList, setMovieList] = useState<IMovieData[]>([]);
   const [scrollX, setScrollX] = useState(0);
+  const [movieDataModalParams, setMovieDataModalParams] = useState<number>();
 
-  document.addEventListener("keydown", function (e) {
-    const { key } = e;
+  const keyLeftPressed = useKeyPress(37);
+  const keyRightPressed = useKeyPress(39);
 
-    switch (key) {
-      case "ArrowLeft":
-        handleClickLeft();
-        break;
+  function handleCloseNewMovieDataModal() {
+    setMovieDataModalShow(false);
+  }
+
+  function handleOpenNewMovieDataModal(params: any) {
+    setMovieDataModalParams(params);
+    setMovieDataModalShow(true);
+  }
+
+  const handleClickLeft = () => {
+    let x = scrollX + Math.round(window.innerWidth / 2);
+    const mathSimple = window.innerWidth * 2 - scrollX;
+
+    if (scrollX === mathSimple) {
+      console.log(scrollX, mathSimple, x);
     }
-  });
+    console.log(scrollX, mathSimple, x);
+    setScrollX(x);
+  };
+
+  const handleClickRight = () => {
+    let x = scrollX - Math.round(window.innerWidth / 2);
+
+    const listW = movieList.length * 220;
+    const maxW = window.innerWidth - listW;
+
+    if (maxW > x) {
+      x = maxW - 10;
+    }
+
+    setScrollX(x);
+  };
+
+  useEffect(() => {
+    if (keyLeftPressed) handleClickLeft();
+    if (keyRightPressed) handleClickRight();
+  }, [keyLeftPressed, keyRightPressed]);
 
   useEffect(() => {
     api
@@ -32,23 +60,10 @@ export function PopularFilms() {
         `popular?api_key=b546a16a0e4b1ba063c4f43fdda8c26c&language=pt-BR&page=1`
       )
       .then((response) => {
-        const { results } = response.data;
-
+        let { results } = response.data;
         setMovieList(results);
       });
   }, []);
-
-  const handleClickLeft = () => {
-    let x = scrollX + Math.round(window.innerWidth / 2);
-
-    const stopNav = scrollX > window.innerWidth / 2;
-
-    if (stopNav) {
-      x = 0;
-    }
-
-    setScrollX(x);
-  };
 
   return (
     <Container marginLeft={scrollX}>
@@ -57,12 +72,26 @@ export function PopularFilms() {
       </Swipe>
 
       {movieList.map((movies) => {
-        return <Movie name={movies.title} imageURL={movies.poster_path} />;
+        return (
+          <Movie
+            onClick={() => {
+              handleOpenNewMovieDataModal(movies.id);
+            }}
+            name={movies.title}
+            imageURL={movies.poster_path}
+          />
+        );
       })}
 
       <Swipe id="right">
         <FaAngleRight size={34} />
       </Swipe>
+
+      <MovieDataModal
+        isOpen={movieDataModalShow}
+        id={movieDataModalParams}
+        onRequestClose={handleCloseNewMovieDataModal}
+      />
     </Container>
   );
 }

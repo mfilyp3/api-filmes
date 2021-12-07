@@ -19,12 +19,13 @@ export const MovieData = styled.div<IStyleProps>`
   width: ${px2vw(220)};
   height: ${px2vw(320)};
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: all 0.3s ease;
   margin-right: 1rem;
   margin-bottom: 1rem;
 
   &:hover {
-    box-shadow: inset 0 0 10vw 0
+   transform: scale(1.3);
+    box-shadow: inset 0 0 10vh 0
       ${(props) => shade(0.9, props.theme.colors.bgColor)};
   }
 `;

@@ -1,12 +1,16 @@
 import { Header } from "../Header";
 import { PopularFilms } from "../PopularFilms";
-import { Container } from "./styles";
+import { Container, Content } from "./styles";
 
 export function Layout() {
   return (
     <Container>
       <Header />
-      <PopularFilms />
+
+      <Content>
+        <h4>Filmes do momento</h4>
+        <PopularFilms />
+      </Content>
     </Container>
   );
 }

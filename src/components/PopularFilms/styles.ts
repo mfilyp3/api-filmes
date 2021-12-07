@@ -14,7 +14,7 @@ export const Container = styled.div<IStyleProps>`
   position: relative;;
   left: ${props => props.marginLeft}px;
 
-  transition: all .8s;
+  transition: all .8s ease;
   
   
   &:hover div {
